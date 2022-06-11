@@ -3,6 +3,7 @@ open3d_ispc_add_library(core OBJECT)
 target_sources(core PRIVATE
     AdvancedIndexing.cpp
     CUDAUtils.cpp
+    Device.cpp
     Dtype.cpp
     EigenConverter.cpp
     Indexer.cpp
@@ -13,7 +14,6 @@ target_sources(core PRIVATE
     ShapeUtil.cpp
     SizeVector.cpp
     SmallVector.cpp
-    SYCLUtils.cpp
     Tensor.cpp
     TensorCheck.cpp
     TensorFunction.cpp
@@ -21,9 +21,16 @@ target_sources(core PRIVATE
     TensorList.cpp
 )
 
-open3d_sycl_target_sources(core PRIVATE VERBOSE
+# Compile regardless BUILD_SYCL_MODULE == ON or OFF.
+open3d_sycl_target_sources(core PRIVATE
     SYCLUtils.cpp
 )
+
+if (BUILD_SYCL_MODULE)
+    open3d_sycl_target_sources(core PRIVATE
+        MemoryManagerSYCL.cpp
+    )
+endif()
 
 target_sources(core PRIVATE
     hashmap/CPU/CPUHashBackendBuffer.cpp

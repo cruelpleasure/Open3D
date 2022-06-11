@@ -49,9 +49,9 @@ void UnaryEW(const Tensor& src, Tensor& dst, UnaryEWOpCode op_code) {
                           src_device.ToString(), dst_device.ToString());
     }
 
-    if (src_device.GetType() == Device::DeviceType::CPU) {
+    if (src_device.IsCPU()) {
         UnaryEWCPU(src, dst, op_code);
-    } else if (src_device.GetType() == Device::DeviceType::CUDA) {
+    } else if (src_device.IsCUDA()) {
 #ifdef BUILD_CUDA_MODULE
         UnaryEWCUDA(src, dst, op_code);
 #else
