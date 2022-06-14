@@ -95,6 +95,21 @@ public:
     /// Returns a vector of available devices.
     static std::vector<Device> GetAvailableDevices();
 
+    /// Returns a vector of available CPU device.
+    static std::vector<Device> GetAvailableCPUDevices();
+
+    /// Returns a vector of available CUDA device.
+    static std::vector<Device> GetAvailableCUDADevices();
+
+    /// Returns a vector of available SYCL device.
+    static std::vector<Device> GetAvailableSYCLDevices();
+
+    /// Returns a vector of available SYCL_CPU device.
+    static std::vector<Device> GetAvailableSYCLCPUDevices();
+
+    /// Returns a vector of available SYCL_GPU device.
+    static std::vector<Device> GetAvailableSYCLGPUDevices();
+
     /// Print all available devices.
     static void PrintAvailableDevices();
 

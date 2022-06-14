@@ -58,7 +58,13 @@ bool IsAvailable();
 bool IsDeviceAvailable(const Device& device);
 
 /// Return a list of available SYCL devices.
-std::vector<Device> GetAvailableDevices();
+std::vector<Device> GetAvailableSYCLDevices();
+
+/// Return a list of available SYCL CPU devices.
+std::vector<Device> GetAvailableSYCLCPUDevices();
+
+/// Return a list of available SYCL GPU devices.
+std::vector<Device> GetAvailableSYCLGPUDevices();
 
 }  // namespace sycl_utils
 }  // namespace core

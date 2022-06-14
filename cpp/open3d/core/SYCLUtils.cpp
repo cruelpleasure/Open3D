@@ -237,7 +237,7 @@ void PrintSYCLDevices(bool print_all) {
 
 bool IsAvailable() {
 #ifdef BUILD_SYCL_MODULE
-    return GetAvailableDevices().size() > 0;
+    return GetAvailableSYCLDevices().size() > 0;
 #else
     return false;
 #endif
@@ -273,7 +273,16 @@ bool IsDeviceAvailable(const Device &device) {
 #endif
 }
 
-std::vector<Device> GetAvailableDevices() {
+std::vector<Device> GetAvailableSYCLDevices() {
+    std::vector<Device> cpu_devices = GetAvailableSYCLCPUDevices();
+    std::vector<Device> gpu_devices = GetAvailableSYCLGPUDevices();
+    std::vector<Device> devices;
+    devices.insert(devices.end(), cpu_devices.begin(), cpu_devices.end());
+    devices.insert(devices.end(), gpu_devices.begin(), gpu_devices.end());
+    return devices;
+}
+
+std::vector<Device> GetAvailableSYCLCPUDevices() {
 #ifdef BUILD_SYCL_MODULE
     std::vector<Device> devices;
     try {
@@ -281,6 +290,15 @@ std::vector<Device> GetAvailableDevices() {
         devices.push_back(Device("SYCL_CPU:0"));
     } catch (const sycl::exception &e) {
     }
+    return devices;
+#else
+    return {};
+#endif
+}
+
+std::vector<Device> GetAvailableSYCLGPUDevices() {
+#ifdef BUILD_SYCL_MODULE
+    std::vector<Device> devices;
     try {
         const sycl::device &device = sycl::device(sycl::gpu_selector());
         devices.push_back(Device("SYCL_GPU:0"));

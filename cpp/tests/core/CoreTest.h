@@ -26,16 +26,14 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <vector>
 
+#include "open3d/core/CUDAUtils.h"
 #include "open3d/core/Device.h"
 #include "open3d/core/Dtype.h"
 #include "open3d/core/SizeVector.h"
 #include "tests/Tests.h"
-
-#ifdef BUILD_CUDA_MODULE
-#include "open3d/core/CUDAUtils.h"
-#endif
 
 namespace open3d {
 namespace tests {
@@ -51,26 +49,45 @@ public:
     }
 };
 
+// Select one device for each device type.
 class PermuteDevices : public testing::TestWithParam<core::Device> {
 public:
     static std::vector<core::Device> TestCases() {
-#ifdef BUILD_CUDA_MODULE
-        const int device_count = core::cuda::DeviceCount();
-        if (device_count >= 1) {
-            return {
-                    core::Device("CPU:0"),
-                    core::Device("CUDA:0"),
-            };
-        } else {
-            return {
-                    core::Device("CPU:0"),
-            };
+        std::vector<core::Device> cpu_devices =
+                core::Device::GetAvailableCPUDevices();
+        std::vector<core::Device> cuda_devices =
+                core::Device::GetAvailableCUDADevices();
+
+        std::vector<core::Device> devices;
+        if (!cpu_devices.empty()) {
+            devices.push_back(cpu_devices[0]);
         }
-#else
-        return {
-                core::Device("CPU:0"),
-        };
-#endif
+        if (!cuda_devices.empty()) {
+            devices.push_back(cuda_devices[0]);
+        }
+
+        return devices;
+    }
+};
+
+class PermuteDevicesWithSYCL : public testing::TestWithParam<core::Device> {
+public:
+    static std::vector<core::Device> TestCases() {
+        std::vector<core::Device> devices = PermuteDevices::TestCases();
+
+        std::vector<core::Device> sycl_cpu_devices =
+                core::Device::GetAvailableSYCLCPUDevices();
+        std::vector<core::Device> sycl_gpu_devices =
+                core::Device::GetAvailableSYCLGPUDevices();
+
+        if (!sycl_cpu_devices.empty()) {
+            devices.push_back(sycl_cpu_devices[0]);
+        }
+        if (!sycl_gpu_devices.empty()) {
+            devices.push_back(sycl_gpu_devices[0]);
+        }
+
+        return devices;
     }
 };
 

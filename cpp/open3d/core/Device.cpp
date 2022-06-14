@@ -174,12 +174,41 @@ std::vector<Device> Device::GetAvailableDevices() {
 
     // SYCL.
     if (sycl_utils::IsAvailable()) {
-        for (const Device& device : sycl_utils::GetAvailableDevices()) {
+        for (const Device& device : sycl_utils::GetAvailableSYCLDevices()) {
             devices.push_back(device);
         }
     }
 
     return devices;
+}
+
+std::vector<Device> Device::GetAvailableCPUDevices() {
+    std::vector<Device> devices;
+    devices.push_back(Device(DeviceType::CPU, 0));
+    return devices;
+}
+
+std::vector<Device> Device::GetAvailableCUDADevices() {
+    std::vector<Device> devices;
+    if (cuda::IsAvailable()) {
+        int device_count = cuda::DeviceCount();
+        for (int i = 0; i < device_count; i++) {
+            devices.push_back(Device(DeviceType::CUDA, i));
+        }
+    }
+    return devices;
+}
+
+std::vector<Device> Device::GetAvailableSYCLDevices() {
+    return sycl_utils::GetAvailableSYCLDevices();
+}
+
+std::vector<Device> Device::GetAvailableSYCLCPUDevices() {
+    return sycl_utils::GetAvailableSYCLCPUDevices();
+}
+
+std::vector<Device> Device::GetAvailableSYCLGPUDevices() {
+    return sycl_utils::GetAvailableSYCLGPUDevices();
 }
 
 void Device::PrintAvailableDevices() {
