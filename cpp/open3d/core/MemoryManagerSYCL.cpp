@@ -90,7 +90,12 @@ private:
 void* MemoryManagerSYCL::Malloc(size_t byte_size, const Device& device) {
     const sycl::queue& queue =
             SYCLContextManager::GetInstance().GetDefaultQueue(device);
-    return (void*)sycl::malloc_shared(byte_size, queue);
+
+    if (device.IsSYCLCPU()) {
+        return (void*)sycl::malloc_host(byte_size, queue);
+    } else {
+        return (void*)sycl::malloc_device(byte_size, queue);
+    }
 }
 
 void MemoryManagerSYCL::Free(void* ptr, const Device& device) {
@@ -107,17 +112,31 @@ void MemoryManagerSYCL::Memcpy(void* dst_ptr,
                                const Device& src_device,
                                size_t num_bytes) {
     Device device_with_queue;
-    if (dst_device.GetType() == Device::DeviceType::SYCL_CPU ||
-        dst_device.GetType() == Device::DeviceType::SYCL_GPU) {
+
+    if (src_device.IsCPU() && dst_device.IsCPU()) {
+        utility::LogError("Wrong device {}->{}.", src_device.ToString(),
+                          dst_device.ToString());
+    } else if (src_device.IsCPU() && dst_device.IsSYCLCPU()) {
         device_with_queue = dst_device;
-    } else if (src_device.GetType() == Device::DeviceType::SYCL_CPU ||
-               src_device.GetType() == Device::DeviceType::SYCL_GPU) {
+    } else if (src_device.IsCPU() && dst_device.IsSYCLGPU()) {
+        device_with_queue = dst_device;
+    } else if (src_device.IsSYCLCPU() && dst_device.IsCPU()) {
+        device_with_queue = src_device;
+    } else if (src_device.IsSYCLCPU() && dst_device.IsSYCLCPU()) {
+        device_with_queue = src_device;
+    } else if (src_device.IsSYCLCPU() && dst_device.IsSYCLGPU()) {
+        device_with_queue = dst_device;
+    } else if (src_device.IsSYCLGPU() && dst_device.IsCPU()) {
+        device_with_queue = src_device;
+    } else if (src_device.IsSYCLGPU() && dst_device.IsSYCLCPU()) {
+        device_with_queue = src_device;
+    } else if (src_device.IsSYCLGPU() && dst_device.IsSYCLGPU()) {
         device_with_queue = src_device;
     } else {
-        utility::LogError(
-                "MemoryManagerSYCL::Memcpy: Both src and dst device are not "
-                "SYCL device.");
+        utility::LogError("Wrong device {}->{}.", src_device.ToString(),
+                          dst_device.ToString());
     }
+
     sycl::queue queue = SYCLContextManager::GetInstance().GetDefaultQueue(
             device_with_queue);
     queue.memcpy(dst_ptr, src_ptr, num_bytes).wait_and_throw();
