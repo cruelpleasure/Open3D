@@ -91,11 +91,17 @@ void* MemoryManagerSYCL::Malloc(size_t byte_size, const Device& device) {
     const sycl::queue& queue =
             SYCLContextManager::GetInstance().GetDefaultQueue(device);
 
+#ifdef ENABLE_SYCL_UNIFIED_SHARED_MEMORY
+    utility::LogInfo("SYCL Unified Shared Memory is enabled.");
+    return (void*)sycl::malloc_shared(byte_size, queue);
+#else
+    utility::LogInfo("SYCL Unified Shared Memory is not enabled.");
     if (device.IsSYCLCPU()) {
         return (void*)sycl::malloc_host(byte_size, queue);
     } else {
         return (void*)sycl::malloc_device(byte_size, queue);
     }
+#endif
 }
 
 void MemoryManagerSYCL::Free(void* ptr, const Device& device) {
