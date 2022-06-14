@@ -41,26 +41,28 @@ public:
     static std::vector<core::Dtype> TestCases();
 };
 
-/// Select one device for each device type.
+/// Permute one device for each device type, in {CPU, CUDA}.
+/// PermuteDevicesWithSYCL should be used if SYCL support is implemented.
 class PermuteDevices : public testing::TestWithParam<core::Device> {
 public:
     static std::vector<core::Device> TestCases();
 };
 
-/// Select one device for each device type, including SYCL devices.
+/// Permute one device for each device type, in {CPU, CUDA, SYCL_CPU, SYCL_GPU}.
 class PermuteDevicesWithSYCL : public testing::TestWithParam<core::Device> {
 public:
     static std::vector<core::Device> TestCases();
 };
 
-/// Select device pairs.
+/// Permute device pairs, in {CPU, CUDA}.
+/// PermuteDevicePairsWithSYCL should be used if SYCL support is implemented.
 class PermuteDevicePairs
     : public testing::TestWithParam<std::pair<core::Device, core::Device>> {
 public:
     static std::vector<std::pair<core::Device, core::Device>> TestCases();
 };
 
-/// Select device pairs, including SYCL devices.
+/// Permute device pairs, in {CPU, CUDA, SYCL_CPU, SYCL_GPU}.
 class PermuteDevicePairsWithSYCL
     : public testing::TestWithParam<std::pair<core::Device, core::Device>> {
 public:

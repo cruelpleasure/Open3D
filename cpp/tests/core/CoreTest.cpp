@@ -136,6 +136,11 @@ PermuteDevicePairsWithSYCL::TestCases() {
     devices.insert(devices.end(), sycl_gpu_devices.begin(),
                    sycl_gpu_devices.end());
 
+    // Print all devices for debugging
+    for (const auto& device : devices) {
+        utility::LogInfo("Device: {}", device.ToString());
+    }
+
     // Self-pairs and cross pairs (bidirectional).
     std::vector<std::pair<core::Device, core::Device>> device_pairs;
     for (size_t i = 0; i < devices.size(); i++) {
