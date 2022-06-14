@@ -142,6 +142,8 @@ TEST_P(MemoryManagerPermuteDevicePairs, Memcpy) {
     core::Device dst_device;
     core::Device src_device;
     std::tie(dst_device, src_device) = GetParam();
+    utility::LogInfo("Memcpy test: {} -> {}", src_device.ToString(),
+                     dst_device.ToString());
 
     char dst_vals[6] = "xxxxx";
     char src_vals[6] = "hello";
