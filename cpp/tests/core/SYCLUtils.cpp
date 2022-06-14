@@ -37,19 +37,13 @@
 namespace open3d {
 namespace tests {
 
-TEST(SYCLUtils, SYCLDemo) { EXPECT_EQ(core::sycl_utils::SYCLDemo(), 0); }
+TEST(SYCLUtils, SYCLDemo) { core::sycl_utils::SYCLDemo(); }
 
 TEST(SYCLUtils, PrintAllSYCLDevices) {
-    if (!core::sycl_utils::IsAvailable()) {
-        return;
-    }
     core::sycl_utils::PrintSYCLDevices(/*print_all=*/true);
 }
 
 TEST(SYCLUtils, PrintSYCLDevices) {
-    if (!core::sycl_utils::IsAvailable()) {
-        return;
-    }
     core::sycl_utils::PrintSYCLDevices(/*print_all=*/false);
 }
 
