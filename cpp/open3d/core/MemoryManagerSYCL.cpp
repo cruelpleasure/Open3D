@@ -26,7 +26,6 @@
 
 #include <CL/sycl.hpp>
 #include <cstdlib>
-#include <dpct/dpct.hpp>
 #include <unordered_map>
 
 #include "open3d/core/Device.h"
