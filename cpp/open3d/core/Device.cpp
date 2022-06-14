@@ -163,6 +163,7 @@ std::vector<Device> Device::GetAvailableDevices() {
 
     // CPU.
     devices.push_back(Device(DeviceType::CPU, 0));
+
     // CUDA.
     if (cuda::IsAvailable()) {
         int device_count = cuda::DeviceCount();
@@ -170,6 +171,7 @@ std::vector<Device> Device::GetAvailableDevices() {
             devices.push_back(Device(DeviceType::CUDA, i));
         }
     }
+
     // SYCL.
     if (sycl_utils::IsAvailable()) {
         for (const Device& device : sycl_utils::GetAvailableDevices()) {
