@@ -135,7 +135,10 @@ std::string Device::ToString() const {
     return str;
 }
 
-std::string Device::GetDescription() const { return description_; }
+std::string Device::GetDescription() const {
+    // TODO: compilation error if Device:::description_ is defined.
+    return "dummy description";
+}
 
 Device::DeviceType Device::GetType() const { return device_type_; }
 
