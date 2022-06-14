@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <unordered_map>
 #include <vector>
 
@@ -95,38 +96,31 @@ class PermuteDevicePairs
     : public testing::TestWithParam<std::pair<core::Device, core::Device>> {
 public:
     static std::vector<std::pair<core::Device, core::Device>> TestCases() {
-#ifdef BUILD_CUDA_MODULE
-        const int device_count = core::cuda::DeviceCount();
-        if (device_count > 1) {
-            // To test multiple CUDA devices, we only need to test CUDA 0 and 1.
-            return {
-                    {core::Device("CPU:0"), core::Device("CPU:0")},    // 0
-                    {core::Device("CPU:0"), core::Device("CUDA:0")},   // 1
-                    {core::Device("CPU:0"), core::Device("CUDA:1")},   // 2
-                    {core::Device("CUDA:0"), core::Device("CPU:0")},   // 3
-                    {core::Device("CUDA:0"), core::Device("CUDA:0")},  // 4
-                    {core::Device("CUDA:0"), core::Device("CUDA:1")},  // 5
-                    {core::Device("CUDA:1"), core::Device("CPU:0")},   // 6
-                    {core::Device("CUDA:1"), core::Device("CUDA:0")},  // 7
-                    {core::Device("CUDA:1"), core::Device("CUDA:1")},  // 8
-            };
-        } else if (device_count == 1) {
-            return {
-                    {core::Device("CPU:0"), core::Device("CPU:0")},
-                    {core::Device("CPU:0"), core::Device("CUDA:0")},
-                    {core::Device("CUDA:0"), core::Device("CPU:0")},
-                    {core::Device("CUDA:0"), core::Device("CUDA:0")},
-            };
-        } else {
-            return {
-                    {core::Device("CPU:0"), core::Device("CPU:0")},
-            };
+        std::vector<core::Device> cpu_devices =
+                core::Device::GetAvailableCPUDevices();
+        std::vector<core::Device> cuda_devices =
+                core::Device::GetAvailableCUDADevices();
+        cuda_devices.resize(
+                std::min(static_cast<size_t>(2), cuda_devices.size()));
+        std::vector<core::Device> devices;
+        devices.insert(devices.end(), cpu_devices.begin(), cpu_devices.end());
+        devices.insert(devices.end(), cuda_devices.begin(), cuda_devices.end());
+
+        std::vector<std::pair<core::Device, core::Device>> device_pairs;
+        // Self-pairs.
+        for (size_t i = 0; i < devices.size(); i++) {
+            device_pairs.push_back({devices[i], devices[i]});
         }
-#else
-        return {
-                {core::Device("CPU:0"), core::Device("CPU:0")},
-        };
-#endif
+        // Cross-pairs (bidirectional).
+        for (size_t i = 0; i < devices.size(); i++) {
+            for (size_t j = 0; j < devices.size(); j++) {
+                if (i != j) {
+                    device_pairs.push_back({devices[i], devices[j]});
+                }
+            }
+        }
+
+        return device_pairs;
     }
 };
 
