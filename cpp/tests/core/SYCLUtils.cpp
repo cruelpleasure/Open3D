@@ -47,56 +47,5 @@ TEST(SYCLUtils, PrintSYCLDevices) {
     core::sycl_utils::PrintSYCLDevices(/*print_all=*/false);
 }
 
-TEST(SYCLUtils, SYCLMemoryManager) {
-    std::vector<float> src_host_data{0.0, 1.0, 2.0, 3.0};  // 16 bytes.
-    const void* src_host_ptr = static_cast<void*>(src_host_data.data());
-    size_t byte_size = src_host_data.size() * sizeof(float);
-
-    core::Device host = core::Device("CPU:0");
-    core::Device sycl_cpu = core::Device("SYCL_CPU:0");
-    core::Device sycl_gpu = core::Device("SYCL_GPU:0");
-
-    void* dst_host_ptr = core::MemoryManager::Malloc(byte_size, host);
-    auto reset_dst_host_ptr = [dst_host_ptr]() {
-        static_cast<float*>(dst_host_ptr)[0] = 3.14;
-        static_cast<float*>(dst_host_ptr)[1] = 3.14;
-        static_cast<float*>(dst_host_ptr)[2] = 3.14;
-        static_cast<float*>(dst_host_ptr)[3] = 3.14;
-    };
-    auto is_dst_host_ptr_correct = [dst_host_ptr]() -> bool {
-        bool rc = true;
-        rc = rc && static_cast<float*>(dst_host_ptr)[0] == 0.0;
-        rc = rc && static_cast<float*>(dst_host_ptr)[1] == 1.0;
-        rc = rc && static_cast<float*>(dst_host_ptr)[2] == 2.0;
-        rc = rc && static_cast<float*>(dst_host_ptr)[3] == 3.0;
-        return rc;
-    };
-
-    // SYCL_CPU.
-    void* sycl_cpu_ptr = core::MemoryManager::Malloc(byte_size, sycl_cpu);
-    core::MemoryManager::Memcpy(sycl_cpu_ptr, sycl_cpu, src_host_ptr, host,
-                                byte_size);
-    reset_dst_host_ptr();
-    EXPECT_FALSE(is_dst_host_ptr_correct());
-    core::MemoryManager::Memcpy(dst_host_ptr, host, sycl_cpu_ptr, sycl_cpu,
-                                byte_size);
-    EXPECT_TRUE(is_dst_host_ptr_correct());
-    core::MemoryManager::Free(sycl_cpu_ptr, sycl_cpu);
-
-    // SYCL_GPU.
-    void* sycl_gpu_ptr = core::MemoryManager::Malloc(byte_size, sycl_gpu);
-    core::MemoryManager::Memcpy(sycl_gpu_ptr, sycl_gpu, src_host_ptr, host,
-                                byte_size);
-    reset_dst_host_ptr();
-    EXPECT_FALSE(is_dst_host_ptr_correct());
-    core::MemoryManager::Memcpy(dst_host_ptr, host, sycl_gpu_ptr, sycl_gpu,
-                                byte_size);
-    EXPECT_TRUE(is_dst_host_ptr_correct());
-    core::MemoryManager::Free(sycl_gpu_ptr, sycl_gpu);
-
-    // Clean up.
-    core::MemoryManager::Free(dst_host_ptr, host);
-}
-
 }  // namespace tests
 }  // namespace open3d
