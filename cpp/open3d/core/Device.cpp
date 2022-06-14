@@ -100,19 +100,6 @@ bool Device::operator<(const Device& other) const {
     return ToString() < other.ToString();
 }
 
-bool Device::IsCPU() const { return device_type_ == DeviceType::CPU; }
-
-bool Device::IsCUDA() const { return device_type_ == DeviceType::CUDA; }
-
-bool Device::IsSYCL() const {
-    return device_type_ == DeviceType::SYCL_CPU ||
-           device_type_ == DeviceType::SYCL_GPU;
-}
-
-bool Device::IsSYCLCPU() const { return device_type_ == DeviceType::SYCL_CPU; }
-
-bool Device::IsSYCLGPU() const { return device_type_ == DeviceType::SYCL_GPU; }
-
 std::string Device::ToString() const {
     std::string str = "";
     switch (device_type_) {

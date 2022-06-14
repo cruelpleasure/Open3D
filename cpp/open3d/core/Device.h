@@ -63,19 +63,26 @@ public:
     bool operator<(const Device& other) const;
 
     /// Returns true iff device type is CPU.
-    bool IsCPU() const;
+    inline bool IsCPU() const { return device_type_ == DeviceType::CPU; }
 
     /// Returns true iff device type is CUDA.
-    bool IsCUDA() const;
+    inline bool IsCUDA() const { return device_type_ == DeviceType::CUDA; }
 
     /// Returns true iff device type is SYCL_CPU or SYCL_GPU.
-    bool IsSYCL() const;
+    inline bool IsSYCL() const {
+        return device_type_ == DeviceType::SYCL_CPU ||
+               device_type_ == DeviceType::SYCL_GPU;
+    }
 
     /// Returns true iff device type is SYCL_CPU.
-    bool IsSYCLCPU() const;
+    inline bool IsSYCLCPU() const {
+        return device_type_ == DeviceType::SYCL_CPU;
+    }
 
     /// Returns true iff device type is SYCL_GPU.
-    bool IsSYCLGPU() const;
+    inline bool IsSYCLGPU() const {
+        return device_type_ == DeviceType::SYCL_GPU;
+    }
 
     /// Returns string representation of device, e.g. "CPU:0", "CUDA:0".
     std::string ToString() const;
