@@ -113,7 +113,7 @@ protected:
     size_t limit_;
 };
 
-std::shared_ptr<core::MemoryManagerCached> MakeCachedDeviceMemoryManager(
+std::shared_ptr<core::MemoryManagerCached> MakeCachedMemoryManagerDevice(
         const core::Device& device) {
     if (device.IsCPU()) {
         return std::make_shared<core::MemoryManagerCached>(
@@ -171,7 +171,7 @@ void ExpectStatistic(const std::shared_ptr<DummyMemoryManager>& dummy_mm,
     EXPECT_EQ(dummy_mm->GetAllocatedSize(), allocated_size);
 }
 
-TEST(MemoryManagerPermuteDevices, NestedCachedMemoryManager) {
+TEST(MemoryManagerPermuteDevices, NestedMemoryManagerCached) {
     core::Device device = MakeDummyDevice();
     auto dummy_mm = std::make_shared<DummyMemoryManager>(device);
     auto cached_mm = std::make_shared<core::MemoryManagerCached>(dummy_mm);

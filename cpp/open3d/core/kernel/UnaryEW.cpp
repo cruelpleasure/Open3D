@@ -70,16 +70,13 @@ void Copy(const Tensor& src, Tensor& dst) {
     }
 
     // Disbatch to device
-    Device::DeviceType src_device_type = src.GetDevice().GetType();
-    Device::DeviceType dst_device_type = dst.GetDevice().GetType();
-    if ((src_device_type != Device::DeviceType::CPU &&
-         src_device_type != Device::DeviceType::CUDA) ||
-        (dst_device_type != Device::DeviceType::CPU &&
-         dst_device_type != Device::DeviceType::CUDA)) {
+    Device src_device = src.GetDevice();
+    Device dst_device = dst.GetDevice();
+    if ((!src_device.IsCPU() && !src_device.IsCUDA()) ||
+        (!dst_device.IsCPU() && !dst_device.IsCUDA())) {
         utility::LogError("Copy: Unimplemented device");
     }
-    if (src_device_type == Device::DeviceType::CPU &&
-        dst_device_type == Device::DeviceType::CPU) {
+    if (src_device.IsCPU() && dst_device.IsCPU()) {
         CopyCPU(src, dst);
     } else {
 #ifdef BUILD_CUDA_MODULE

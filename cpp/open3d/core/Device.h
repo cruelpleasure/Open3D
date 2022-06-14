@@ -40,8 +40,8 @@ public:
     enum class DeviceType {
         CPU = 0,
         CUDA = 1,
-        SYCL_CPU = 3,  // SYCL host_selector(), not cpu_selector().
-        SYCL_GPU = 4,  // SYCL gpu_selector().
+        SYCL_CPU = 2,  // SYCL host_selector(), not cpu_selector().
+        SYCL_GPU = 3,  // SYCL gpu_selector().
     };
 
     /// Default constructor -> "CPU:0".
@@ -116,6 +116,24 @@ public:
 protected:
     DeviceType device_type_ = DeviceType::CPU;
     int device_id_ = 0;
+};
+
+/// Abstract class to provide IsXXX() functionality to check device location.
+/// Need to implement GetDevice().
+class IsDevice {
+public:
+    IsDevice() = default;
+    virtual ~IsDevice() = default;
+
+    virtual core::Device GetDevice() const = 0;
+
+    inline bool IsCPU() const {
+        return GetDevice().GetType() == Device::DeviceType::CPU;
+    }
+
+    inline bool IsCUDA() const {
+        return GetDevice().GetType() == Device::DeviceType::CUDA;
+    }
 };
 
 }  // namespace core

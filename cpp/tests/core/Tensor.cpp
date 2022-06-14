@@ -3453,7 +3453,7 @@ TEST_P(TensorPermuteDevices, ConstIterator) {
 
 TEST_P(TensorPermuteDevices, TakeOwnership) {
     core::Device device = GetParam();
-    if (device.GetType() != core::Device::DeviceType::CPU) {
+    if (!device.IsCPU()) {
         GTEST_SKIP();
     }
     std::vector<int> values{1, 2, 3, 4, 5, 6};

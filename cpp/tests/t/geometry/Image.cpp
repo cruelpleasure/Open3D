@@ -283,9 +283,7 @@ TEST_P(ImagePermuteDevices, FilterBilateral) {
                 core::Tensor(input_data, {5, 5, 1}, core::Float32, device);
 
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.FilterBilateral(3, 10, 10), std::runtime_error);
         } else {
             im = im.FilterBilateral(3, 10, 10);
@@ -325,9 +323,7 @@ TEST_P(ImagePermuteDevices, FilterBilateral) {
                 core::Tensor(input_data, {5, 5, 1}, core::UInt8, device);
 
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.FilterBilateral(3, 5, 5), std::runtime_error);
         } else {
             im = im.FilterBilateral(3, 5, 5);
@@ -366,9 +362,7 @@ TEST_P(ImagePermuteDevices, FilterGaussian) {
         core::Tensor data =
                 core::Tensor(input_data, {5, 5, 1}, core::Float32, device);
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.FilterGaussian(3), std::runtime_error);
         } else {
             im = im.FilterGaussian(3);
@@ -402,9 +396,7 @@ TEST_P(ImagePermuteDevices, FilterGaussian) {
         core::Tensor data =
                 core::Tensor(input_data, {5, 5, 1}, core::UInt8, device);
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.FilterGaussian(3), std::runtime_error);
         } else {
             im = im.FilterGaussian(3);
@@ -444,9 +436,7 @@ TEST_P(ImagePermuteDevices, Filter) {
         core::Tensor kernel =
                 core::Tensor(kernel_data, {5, 5}, core::Float32, device);
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.Filter(kernel), std::runtime_error);
         } else {
             t::geometry::Image im_new = im.Filter(kernel);
@@ -492,9 +482,7 @@ TEST_P(ImagePermuteDevices, Filter) {
         core::Tensor kernel =
                 core::Tensor(kernel_data, {5, 5}, core::Float32, device);
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.Filter(kernel), std::runtime_error);
         } else {
             im = im.Filter(kernel);
@@ -538,9 +526,7 @@ TEST_P(ImagePermuteDevices, FilterSobel) {
                 core::Tensor(input_data, {5, 5, 1}, core::Float32, device);
         t::geometry::Image im(data);
         t::geometry::Image dx, dy;
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.FilterSobel(3), std::runtime_error);
         } else {
             std::tie(dx, dy) = im.FilterSobel(3);
@@ -558,9 +544,7 @@ TEST_P(ImagePermuteDevices, FilterSobel) {
                         .To(core::UInt8);
         t::geometry::Image im(data);
         t::geometry::Image dx, dy;
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.FilterSobel(3), std::runtime_error);
         } else {
             std::tie(dx, dy) = im.FilterSobel(3);
@@ -598,9 +582,7 @@ TEST_P(ImagePermuteDevices, Resize) {
         core::Tensor data =
                 core::Tensor(input_data, {6, 6, 1}, core::Float32, device);
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(
                     im.Resize(0.5, t::geometry::Image::InterpType::Nearest),
                     std::runtime_error);
@@ -632,9 +614,7 @@ TEST_P(ImagePermuteDevices, Resize) {
         core::Tensor data =
                 core::Tensor(input_data, {6, 6, 1}, core::UInt8, device);
         t::geometry::Image im(data);
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.Resize(0.5, t::geometry::Image::InterpType::Super),
                          std::runtime_error);
         } else {
@@ -691,9 +671,7 @@ TEST_P(ImagePermuteDevices, PyrDown) {
                 core::Tensor(input_data, {6, 6, 1}, core::Float32, device);
         t::geometry::Image im(data);
 
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.PyrDown(), std::runtime_error);
         } else {
             im = im.PyrDown();
@@ -725,9 +703,7 @@ TEST_P(ImagePermuteDevices, PyrDown) {
                 core::Tensor(input_data, {6, 6, 1}, core::UInt8, device);
         t::geometry::Image im(data);
 
-        if (!t::geometry::Image::HAVE_IPPICV &&
-            device.GetType() ==
-                    core::Device::DeviceType::CPU) {  // Not Implemented
+        if (!t::geometry::Image::HAVE_IPPICV && device.IsCPU()) {
             ASSERT_THROW(im.PyrDown(), std::runtime_error);
         } else {
             im = im.PyrDown();
