@@ -41,23 +41,26 @@ public:
     static std::vector<core::Dtype> TestCases();
 };
 
-// Select one device for each device type.
+/// Select one device for each device type.
 class PermuteDevices : public testing::TestWithParam<core::Device> {
 public:
     static std::vector<core::Device> TestCases();
 };
 
+/// Select one device for each device type, including SYCL devices.
 class PermuteDevicesWithSYCL : public testing::TestWithParam<core::Device> {
 public:
     static std::vector<core::Device> TestCases();
 };
 
+/// Select device pairs.
 class PermuteDevicePairs
     : public testing::TestWithParam<std::pair<core::Device, core::Device>> {
 public:
     static std::vector<std::pair<core::Device, core::Device>> TestCases();
 };
 
+/// Select device pairs, including SYCL devices.
 class PermuteDevicePairsWithSYCL
     : public testing::TestWithParam<std::pair<core::Device, core::Device>> {
 public:
